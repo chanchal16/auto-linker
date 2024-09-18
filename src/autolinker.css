@@ -1,0 +1,41 @@
+.link-preview {
+  display: flex;
+  border: 1px solid #ddd;
+  padding: 8px;
+  margin-top: 8px;
+}
+.link-preview img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  margin-right: 10px;
+}
+#content-wrapper {
+  text-decoration: none;
+}
+.link-content {
+  flex: 1;
+  min-width: 0; /* This is important for text-overflow to work */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.title-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0 0 5px 0;
+  color: #1e293b;
+}
+.description-ellipsis {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0 0 5px 0;
+  color: #8e8e8e;
+  font-size: 14px;
+}
+.link-content small {
+  color: #a3a3a3;
+}
