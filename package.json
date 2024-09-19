@@ -11,9 +11,9 @@
     "test": "jest"
   },
   "keywords": [],
-  "author": "",
+  "author": "Chanchal Rajput",
   "license": "MIT",
-  "description": "",
+  "description": "A utility package that automatically converts URLs, email addresses, and mentions within text into clickable hyperlinks",
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "jest": "^29.7.0",
