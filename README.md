@@ -63,3 +63,11 @@ function App() {
 
 export default App;
 ```
+
+## Props
+| Name           | Type    | Description                                                                                                                                     |
+|----------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| newTab         | boolean | Will open the link in the new tab                                                                                                               |
+| className      | string  | add custom css classes to the links                                                                                                             |
+| mentionOptions | Object  | An object to specify social handles. Consists of properties - `prefix:string` prefix for the mention. (eg:@) `urlPrefix:string` social handle url |
+| linkPreview    | boolean | Determines whether to generate link preview or not                                                                                              |
