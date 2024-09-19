@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs",
+    "target": "es2016",           // Targets modern JavaScript
+    "module": "commonjs",          // Use commonjs for Node.js environment or ESNext for bundlers
     "rootDir": "./src",
     "outDir": "./dist",
+    "declaration": true,           // Generate declaration files (*.d.ts)
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "moduleResolution": "node",    // Resolve modules like Node.js
+    "sourceMap": true              // Generate source maps (optional)
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

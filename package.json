@@ -1,7 +1,8 @@
 {
   "name": "auto-linker-previewer",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/**/*",
     "src/autolinker.css"
@@ -10,7 +11,14 @@
     "build": "tsc",
     "test": "jest"
   },
-  "keywords": [],
+  "keywords": [
+    "autolinker",
+    "url",
+    "hyperlink",
+    "email-link",
+    "preview-link",
+    "npm-package"
+  ],
   "author": "Chanchal Rajput",
   "license": "MIT",
   "description": "A utility package that automatically converts URLs, email addresses, and mentions within text into clickable hyperlinks",
