@@ -1,3 +1,4 @@
+import config from "./api.config";
 // Metadata cache to store previews and avoid repeated requests
 export const metadataCache: Record<string, string> = {};
 
@@ -8,7 +9,7 @@ export const fetchLinkPreview = async (url: string): Promise<string> => {
 
   try {
     const response = await fetch(
-      `https://jsonlink.io/api/extract?url=${url}&api_key=${process.env.API_KEY}`
+      `https://jsonlink.io/api/extract?url=${url}&api_key=${config.apiKey}`
     );
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
