@@ -1,5 +1,5 @@
 {
-  "name": "auto-linker",
+  "name": "auto-linker-previewer",
   "version": "1.0.0",
   "main": "index.js",
   "files": [
