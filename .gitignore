@@ -3,3 +3,4 @@
 
 # Ignore build artifacts
 /dist
+/src/api.config.ts
