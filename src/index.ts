@@ -40,7 +40,7 @@ export const autoLinker = async (
     const target = options.newTab
       ? ` target="_blank" rel="noopener noreferrer"`
       : "";
-    const className = options.className ? ` class="${options.className}"` : "";
+    const className = options.className ? `${options.className}` : "";
 
     const urlReplacement = async () => {
       // Check if we should generate a preview for this URL
@@ -52,7 +52,9 @@ export const autoLinker = async (
           )}</a>${preview}`;
         }
       }
-      return `<a href="${url}"${target}${className}>${truncateUrl(url)}</a>`;
+      return `<a href="${url}"${target} class="link ${className}">${truncateUrl(
+        url
+      )}</a>`;
     };
     promises.push(
       urlReplacement().then((replaceUrl) => {
@@ -63,14 +65,14 @@ export const autoLinker = async (
   await Promise.all(promises);
 
   const linkEmail = linkUrl.replace(emailRegex, (email) => {
-    const className = options.className ? ` class="${options.className}"` : "";
-    return `<a href="mailto:${email}"${className}>${email}</a>`;
+    const className = options.className ? `${options.className}` : "";
+    return `<a href="mailto:${email}" class="link ${className}">${email}</a>`;
   });
 
   const linkMentions = linkEmail.replace(mentionRegex, (mention) => {
     const user = mention.slice(1);
-    const className = options.className ? ` class="${options.className}"` : "";
-    return `<a href="${options.mentionOptions?.urlPrefix}${user}"${className}>${mention}</a>`;
+    const className = options.className ? `${options.className}` : "";
+    return `<a href="${options.mentionOptions?.urlPrefix}${user}" class="link ${className}">${mention}</a>`;
   });
 
   return linkMentions;

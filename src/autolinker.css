@@ -1,3 +1,7 @@
+a.link {
+  color: #3d49ff;
+  text-decoration: underline;
+}
 .link-preview {
   display: flex;
   border: 1px solid #ddd;
