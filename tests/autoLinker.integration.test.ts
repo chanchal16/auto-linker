@@ -21,7 +21,7 @@ describe("fetchLinkPreview", () => {
 
     global.fetch = jest.fn(() => Promise.resolve(mockResponse));
 
-    const preview = await fetchLinkPreview("https://example.com");
+    const preview = await fetchLinkPreview("https://example.com", false);
 
     expect(preview).toContain('<div class="link-preview">');
     expect(preview).toContain('<h4 class="title-ellipsis">Mock Title</h4>');
@@ -34,7 +34,7 @@ describe("fetchLinkPreview", () => {
     const mockErrorResponse = new Error("Network Error");
     global.fetch = jest.fn(() => Promise.reject(mockErrorResponse));
     metadataCache = {};
-    const preview = await fetchLinkPreview("https://google.com");
+    const preview = await fetchLinkPreview("https://google.com", false);
     expect(preview).toBe("");
   });
 
@@ -52,7 +52,7 @@ describe("fetchLinkPreview", () => {
     } as unknown as Response;
     global.fetch = jest.fn(() => Promise.reject(mockResponse));
     metadataCache = {};
-    const preview = await fetchLinkPreview("https://react.com");
+    const preview = await fetchLinkPreview("https://react.com", false);
     expect(preview).toBe("");
   });
 });

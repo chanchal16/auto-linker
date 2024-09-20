@@ -14,7 +14,7 @@ test("autolinker should shorten long urls", async () => {
     "Check out https://scanairobi.hashnode.dev/integration-testing-with-jest";
   const result = await autoLinker(text);
   expect(result).toBe(
-    `Check out <a href="https://scanairobi.hashnode.dev/integration-testing-with-jest" class="link ">https://scanairobi.hashnode.dev/integration...</a>`
+    `Check out <a href="https://scanairobi.hashnode.dev/integration-testing-with-jest" class="link">https://scanairobi.hashnode.dev/integrat...</a>`
   );
 });
 
@@ -22,7 +22,7 @@ test("auto-linker should open in new tab", async () => {
   const text = "Check https://example.com";
   const result = await autoLinker(text, { newTab: true });
   expect(result).toBe(
-    `Check <a href="https://example.com" target="_blank" rel="noopener noreferrer" class="link ">https://example.com</a>`
+    `Check <a href="https://example.com" target="_blank" rel="noopener noreferrer" class="link">https://example.com</a>`
   );
 });
 
@@ -30,7 +30,7 @@ test("auto linker should detect emails", async () => {
   const text = "contact me at john@example.com";
   const result = await autoLinker(text);
   expect(result).toBe(
-    `contact me at <a href="mailto:john@example.com" class="link ">john@example.com</a>`
+    `contact me at <a href="mailto:john@example.com" class="link">john@example.com</a>`
   );
 });
 
@@ -41,7 +41,7 @@ test("should link mentions", async () => {
     mentionOptions: { prefix: "@", urlPrefix: "https://twitter.com/" },
   });
   expect(result).toBe(
-    `Hello <a href="https://twitter.com/johndoe" class="link ">@johndoe</a>, how are you?`
+    `Hello <a href="https://twitter.com/johndoe" class="link">@johndoe</a>, how are you?`
   );
 });
 
