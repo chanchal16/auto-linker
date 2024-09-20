@@ -3,12 +3,12 @@
   <a href="https://github.com/chanchal16/auto-linker">
     <img src="https://res.cloudinary.com/cr07/image/upload/v1726732074/linked-rings_ppywau.svg" alt="Logo" width="90" height="90">
   </a>
-  <h3 align="center">auto-linker</h3>
+  <h3 align="center">auto-linker-previewer</h3>
 
   <p align="center">
     A utility package that automatically converts URLs, email addresses, and mentions within text into clickable hyperlinks.
     <br />
-    <a href="" target="_blank">View Demo</a>
+    <a href="https://4l62tc.csb.app/" target="_blank">View Demo</a>
   </p>
 </p>
 
@@ -30,38 +30,110 @@ Option to generate link preview data for detected URLs.
 Ability to truncate long URLs in display text while keeping the full URL in the href.
 
 
+## Installation
+```
+npm i auto-linker-previewer
+```
+
+
 ## Usage
-**auto-linker** is compatible with all JavaScript frameworks like React, Vue, Angular, etc.
+**auto-linker-previewer** is compatible with all JavaScript frameworks like React, Vue, Angular, etc.
+> **Note**: To use the auto-linker package, make sure to include the CSS file in your project:
+```js
+import 'auto-linker-previewer/dist/autolinker.css';
+```
 
 ### Basic example
 ```javascript
-import { autoLinker } from 'auto-linker';
+import { autoLinker } from 'auto-linker-previewer';
+import 'auto-linker-previewer/dist/autolinker.css';
 
-const text = 'Check out https://example.com or contact me at john@example.com. You can also find me on twitter @john';
-const linkedText = autoLinker(text, { newTab: true, mentionOptions: { prefix: "@", urlPrefix: "https://twitter.com/"} });
-console.log(linkedText);
+const text = 'Visit https://www.chanchal.dev/ or email chanchalr060@gmail.com. You may also find me on Twitter: @chanchal16_';
+const processText = async () => {
+    const result= await autoLinker(text, {newTab:true, mentionOptions: { prefix: "@", urlPrefix: "https://twitter.com/" }});
+    console.log('result',result)
+};
+processText();
 
 ```
 
 ### React
-React allows you to directly insert HTML using **dangerouslySetInnerHTM**L. You can use the auto-linker like this:
+React allows you to directly insert HTML using **dangerouslySetInnerHTM**L. You can use the auto-linker-previewer like this:
 
 ```javascript
-import React from 'react';
-import { autoLinker } from 'auto-linker';
+import React, { useState, useEffect } from "react";
+import { autoLinker } from "auto-linker-previewer";
+import 'auto-linker-previewer/dist/autolinker.css';
 
-function App() {
-  const text = "Visit https://example.com or contact john@example.com";
-  const linkedText = autoLinker(text);
+const ReactExample = () => {
+  const [text, setText] = useState(
+    "Visit https://www.chanchal.dev/ or email chanchalr060@gmail.com. You may also find me on Twitter: @chanchal16_"
+  );
+  const [processedText, setProcessedText] = useState<string>("");
+
+  useEffect(() => {
+    const options: AutoLinkerOptions = {
+      newTab: true,
+      className: "custom-link",
+      mentionOptions: { prefix: "@", urlPrefix: "https://twitter.com/" },
+      linkPreview: true,
+    };
+    const processText = async () => {
+      const result = await autoLinker(text, options);
+      setProcessedText(result);
+    };
+    processText();
+  }, [text]);
 
   return (
     <div>
-      <p dangerouslySetInnerHTML={{ __html: linkedText }} />
+      <h1>React AutoLinker Example</h1>
+      {/* Display processed text as HTML */}
+      <div dangerouslySetInnerHTML={{ __html: processedText }} />
     </div>
   );
+};
+
+export default ReactExample;
+
+```
+
+### Angular
+```javascript
+import { Component, OnInit } from '@angular/core';
+import { autoLinker, AutoLinkerOptions } from 'auto-linker-previewer';
+import 'auto-linker-previewer/dist/autolinker.css';
+
+@Component({
+  selector: 'app-auto-linker',
+  template: `
+    <div>
+      <h1>Angular AutoLinker Example</h1>
+      <!-- Display the processed HTML in Angular -->
+      <div [innerHTML]="processedText"></div>
+    </div>
+  `,
+  styles: [`
+    .custom-link {
+      color: blue;
+      text-decoration: underline;
+    }
+  `]
+})
+export class AutoLinkerComponent implements OnInit {
+  text = 'Visit https://www.chanchal.dev/ or email chanchalr060@gmail.com. You may also find me on Twitter: @chanchal16_';
+  processedText = '';
+  async ngOnInit() {
+    const options: AutoLinkerOptions = {
+      newTab: true,
+      className: 'custom-link',
+      mentionOptions: { prefix: '@', urlPrefix: 'https://twitter.com/' },
+      linkPreview: true,
+    };
+    this.processedText = await autoLinker(this.text, options);
+  }
 }
 
-export default App;
 ```
 
 ## Props
