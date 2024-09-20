@@ -11,15 +11,7 @@ export interface AutoLinkerOptions {
 }
 
 function truncateUrl(url: string) {
-  const urlLength = url.length;
-  const truncatedLength = Math.ceil(urlLength * 0.7);
-
-  if (truncatedLength < 40) {
-    // Ensure a minimum truncated length of 40 characters
-    return url.substring(0, 40);
-  } else {
-    return url.substring(0, truncatedLength) + "...";
-  }
+  return url.length > 40 ? url.slice(0, 40) + "..." : url;
 }
 
 export const autoLinker = async (
@@ -30,50 +22,44 @@ export const autoLinker = async (
   const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b/g;
   const mentionRegex = /\B@([a-zA-Z0-9_]{1,15})\b/g;
 
-  const urls = [...text.matchAll(urlRegex)].map((match) => match[0]); // Extract URLs from text
-  const urlsToPreview = urls.slice(-2); // Get last two URLs
+  const urls = [...text.matchAll(urlRegex)].map((match) => match[0]);
+  const urlsToPreview = urls.slice(-2);
 
   let linkUrl = text;
-  const promises = [];
 
-  for (const url of urls) {
+  const promises = urls.map((url) => {
     const target = options.newTab
       ? ` target="_blank" rel="noopener noreferrer"`
       : "";
-    const className = options.className ? `${options.className}` : "";
+    const className = options.className ? ` ${options.className}` : "";
 
-    const urlReplacement = async () => {
-      // Check if we should generate a preview for this URL
+    return (async () => {
       if (options.linkPreview && urlsToPreview.includes(url)) {
-        const preview = await fetchLinkPreview(url);
+        const preview = await fetchLinkPreview(url, options.newTab || false);
         if (preview) {
-          return `<a href="${url}"${target}${className}>${truncateUrl(
+          return `<a href="${url}"${target} class="link${className}">${truncateUrl(
             url
           )}</a>${preview}`;
         }
       }
-      return `<a href="${url}"${target} class="link ${className}">${truncateUrl(
+      return `<a href="${url}"${target} class="link${className}">${truncateUrl(
         url
       )}</a>`;
-    };
-    promises.push(
-      urlReplacement().then((replaceUrl) => {
-        linkUrl = linkUrl.replace(url, replaceUrl);
-      })
-    );
-  }
-  await Promise.all(promises);
-
-  const linkEmail = linkUrl.replace(emailRegex, (email) => {
-    const className = options.className ? `${options.className}` : "";
-    return `<a href="mailto:${email}" class="link ${className}">${email}</a>`;
+    })().then((replaceUrl) => {
+      linkUrl = linkUrl.replace(url, replaceUrl);
+    });
   });
 
-  const linkMentions = linkEmail.replace(mentionRegex, (mention) => {
+  await Promise.allSettled(promises);
+
+  linkUrl = linkUrl.replace(emailRegex, (email) => {
+    const className = options.className ? ` ${options.className}` : "";
+    return `<a href="mailto:${email}" class="link${className}">${email}</a>`;
+  });
+
+  return linkUrl.replace(mentionRegex, (mention) => {
     const user = mention.slice(1);
-    const className = options.className ? `${options.className}` : "";
-    return `<a href="${options.mentionOptions?.urlPrefix}${user}" class="link ${className}">${mention}</a>`;
+    const className = options.className ? ` ${options.className}` : "";
+    return `<a href="${options.mentionOptions?.urlPrefix}${user}" class="link${className}">${mention}</a>`;
   });
-
-  return linkMentions;
 };
