@@ -18,14 +18,69 @@ export const autoLinker = async (
   text: string,
   options: AutoLinkerOptions = {}
 ): Promise<string> => {
-  const urlRegex = /https?:\/\/[^\s]+/g;
+  const knownTlds = [
+    "com",
+    "org",
+    "net",
+    "edu",
+    "gov",
+    "mil",
+    "int",
+    "co",
+    "io",
+    "biz",
+    "info",
+    "xyz",
+    "ai",
+    "dev",
+    "tv",
+    "me",
+    "app",
+    "shop",
+    "tech",
+    "health",
+    "news",
+    "media",
+    "cloud",
+    "online",
+    "pro",
+    "in",
+    "de",
+    "us",
+    "uk",
+    "ca",
+    "fr",
+    "es",
+    "it",
+    "nl",
+    "no",
+    "se",
+    "ch",
+    "store",
+    "blog",
+    "inc",
+  ];
+  const tldRegex = knownTlds.join("|");
+
+  const urlRegex = new RegExp(
+    `\\b((https?:\\/\\/)?([a-zA-Z0-9.-]+\\.(${tldRegex}))(\\/[^\\s]*)?)\\b`,
+    "g"
+  );
   const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b/g;
-  const mentionRegex = /\B@([a-zA-Z0-9_]{1,15})\b/g;
+  const mentionRegex = /\B@([a-zA-Z0-9._]{1,15})\b/g;
 
-  const urls = [...text.matchAll(urlRegex)].map((match) => match[0]);
+  let processText = text;
+  const emailMatches = [...processText.matchAll(emailRegex)];
+
+  // Replace URLs only if they are not part of email matches
+  const urls = [...processText.matchAll(urlRegex)]
+    .filter((urlMatch) => {
+      const url = urlMatch[0];
+      return !emailMatches.some((emailMatch) => emailMatch[0].includes(url));
+    })
+    .map((match) => match[0]);
+
   const urlsToPreview = urls.slice(-2);
-
-  let linkUrl = text;
 
   const promises = urls.map((url) => {
     const target = options.newTab
@@ -34,30 +89,35 @@ export const autoLinker = async (
     const className = options.className ? ` ${options.className}` : "";
 
     return (async () => {
+      const fullUrl = url.startsWith("http") ? url : `http://${url}`;
+
       if (options.linkPreview && urlsToPreview.includes(url)) {
-        const preview = await fetchLinkPreview(url, options.newTab || false);
+        const preview = await fetchLinkPreview(
+          fullUrl,
+          options.newTab || false
+        );
         if (preview) {
-          return `<a href="${url}"${target} class="link${className}">${truncateUrl(
+          return `<a href="${fullUrl}"${target} class="link${className}">${truncateUrl(
             url
           )}</a>${preview}`;
         }
       }
-      return `<a href="${url}"${target} class="link${className}">${truncateUrl(
+      return `<a href="${fullUrl}"${target} class="link${className}">${truncateUrl(
         url
       )}</a>`;
     })().then((replaceUrl) => {
-      linkUrl = linkUrl.replace(url, replaceUrl);
+      processText = processText.replace(url, replaceUrl);
     });
   });
 
   await Promise.allSettled(promises);
 
-  linkUrl = linkUrl.replace(emailRegex, (email) => {
+  processText = processText.replace(emailRegex, (email) => {
     const className = options.className ? ` ${options.className}` : "";
     return `<a href="mailto:${email}" class="link${className}">${email}</a>`;
   });
 
-  return linkUrl.replace(mentionRegex, (mention) => {
+  return processText.replace(mentionRegex, (mention) => {
     const user = mention.slice(1);
     const className = options.className ? ` ${options.className}` : "";
     return `<a href="${options.mentionOptions?.urlPrefix}${user}" class="link${className}">${mention}</a>`;
