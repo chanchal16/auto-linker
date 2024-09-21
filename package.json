@@ -11,13 +11,19 @@
     "build": "tsc",
     "test": "jest"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chanchal16/auto-linker.git"
+  },
+  "homepage": "https://github.com/chanchal16/auto-linker#readme",
   "keywords": [
     "autolinker",
     "url",
     "hyperlink",
     "email-link",
     "preview-link",
-    "npm-package"
+    "npm-package",
+    "mentions"
   ],
   "author": "Chanchal Rajput",
   "license": "MIT",
